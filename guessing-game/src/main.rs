@@ -38,6 +38,8 @@ fn main() {
 
     
     let mut result: u32 = rand::thread_rng().r#gen::<u32>();
+    let mut currentMax: u32 = u32::MAX;
+    let mut currentMin: u32 = 0;
     
     println!("Hello, lets play a guessing game!");
     println!("-> Press Enter to start");
@@ -46,18 +48,31 @@ fn main() {
 
     loop{
         println!("Current result: {}", result);
+        print!("\tYour input: ");
         match get_input().unwrap() {
             InputResult::Exit => exit_withMessage(),
             InputResult::Up | InputResult::Right => {
+                if result == currentMin {
+                    print!("LIAR!");
+                }
                 println!("OK! Guessing up!");
-                result += (u32::MAX - result)/2;
+                currentMin = result;
+                result += (currentMax - result)/2;
             },
             InputResult::Down | InputResult::Right => {
+                if result == currentMin {
+                    print!("LIAR!");
+                }
                 println!("OK! Guessing down!");
-                result -= result/2;
+                currentMax = result;
+                result -= (result - currentMin)/2;
             },
             _ => println!("Try again!"),
         }
+        if currentMax == currentMin {
+            return;
+        }
+
 
     }
 
