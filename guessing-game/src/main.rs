@@ -1,9 +1,8 @@
 use std::{io, thread::sleep};
-use std::collections::HashMap;
 use crossterm::event::{KeyEventKind, KeyModifiers};
 use rand::Rng;
 use crossterm::{
-    event::{self, read, Event, KeyCode, KeyEvent},
+    event::{self, Event, KeyCode, KeyEvent},
     terminal::{enable_raw_mode, disable_raw_mode},
 };
 
@@ -24,8 +23,8 @@ enum InputResult {
 fn main() {
 
     let mut result: u32 = rand::thread_rng().r#gen::<u32>();
-    let mut currentMax: u32 = u32::MAX;
-    let mut currentMin: u32 = 0;
+    let mut current_max: u32 = u32::MAX;
+    let mut current_min: u32 = 0;
     
     println!("Hello, lets play a guessing game!");
     println!("-> Press Enter to start");
@@ -36,27 +35,27 @@ fn main() {
         println!("Current result: {}", result);
         print!("\tYour input: ");
         match get_input().unwrap() {
-            InputResult::Exit => exit_withMessage(),
+            InputResult::Exit => exit_with_message(),
             InputResult::Up | InputResult::Right => {
-                if result == currentMin {
+                if result == current_min {
                     print!("LIAR!");
                 }
                 println!("up!");
-                currentMin = result;
-                result += (currentMax - result)/2;
+                current_min = result;
+                result += (current_max - result)/2;
             },
-            InputResult::Down | InputResult::Right => {
-                if result == currentMin {
+            InputResult::Down | InputResult::Left => {
+                if result == current_min {
                     print!("LIAR!");
                 }
                 println!(" down!");
-                currentMax = result;
-                result -= (result - currentMin)/2;
+                current_max = result;
+                result -= (result - current_min)/2;
             },
             _ => println!("Try again!"),
         }
-        if currentMax == currentMin {
-            exit_withMessage();
+        if current_max == current_min {
+            exit_with_message();
         }
         
         sleep(std::time::Duration::from_millis(250));  // debounce
@@ -95,7 +94,7 @@ fn get_input() -> io::Result<InputResult> {
 }
 
 
-fn exit_withMessage() {
+fn exit_with_message() {
     println!("\nExiting the game. Goodbye!");
     std::process::exit(0);
 }
