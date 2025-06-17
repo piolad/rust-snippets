@@ -21,10 +21,9 @@ enum InputResult {
 }
 
 fn main() {
-
-    let mut result: u32 = rand::thread_rng().r#gen::<u32>();
-    let mut current_max: u32 = u32::MAX;
+    let mut current_max: u32 = 1000;
     let mut current_min: u32 = 0;
+    let mut result: u32 = rand::thread_rng().gen_range(current_min..=current_max);
     
     println!("Hello, lets play a guessing game!");
     println!("-> Press Enter to start");
@@ -37,8 +36,8 @@ fn main() {
         match get_input().unwrap() {
             InputResult::Exit => exit_with_message(),
             InputResult::Up | InputResult::Right => {
-                if result == current_min {
-                    print!("LIAR!");
+                if result == current_max {
+                    exit_with_message();
                 }
                 println!("up!");
                 current_min = result;
@@ -46,7 +45,7 @@ fn main() {
             },
             InputResult::Down | InputResult::Left => {
                 if result == current_min {
-                    print!("LIAR!");
+                    exit_with_message();
                 }
                 println!(" down!");
                 current_max = result;
@@ -72,9 +71,9 @@ fn get_input() -> io::Result<InputResult> {
         }
         // print!("{:?}", event);
         let result = match  event{
-                Event::Key(KeyEvent {code: KeyCode::Char('e'), ..}) =>  InputResult::Exit,
-                Event::Key(KeyEvent {code: KeyCode::Char('c'), modifiers: KeyModifiers::CONTROL, ..}) =>  InputResult::Exit,
-                Event::Key(KeyEvent {code: KeyCode::Char('h'), ..}) =>  InputResult::Help,
+                Event::Key(KeyEvent {code: KeyCode::Char('e') | KeyCode::Char('E'), ..}) =>  InputResult::Exit,
+                Event::Key(KeyEvent {code: KeyCode::Char('c') | KeyCode::Char('C'), modifiers: KeyModifiers::CONTROL, ..}) =>  InputResult::Exit,
+                Event::Key(KeyEvent {code: KeyCode::Char('h') | KeyCode::Char('H'), ..}) =>  InputResult::Help,
                 Event::Key(KeyEvent {code: KeyCode::Char(c), ..}) =>  InputResult::Char(c),
                 Event::Key(KeyEvent {code: KeyCode::Up, ..}) => InputResult::Up,
                 Event::Key(KeyEvent {code: KeyCode::Down, ..}) => InputResult::Down,
